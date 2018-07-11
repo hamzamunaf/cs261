@@ -42,40 +42,108 @@ void printString(char s[]){
 }
 
 void removeChar(char* word, int loc){
-
+		for(int i = loc; i < (stringLength(word)); i++){
+			word[i] = word[i+1];
+	}
 }
 
 void camelCase(char* word){
 	/*Convert to camelCase*/
-	for(int i = 0; i < stringLength(word); i++){
-		if (word[i] >= 65 && word[i] <= 90){
-			word[i] = word[i] + 32;
-		}
+	int wordCount = 0;
+	int isWord = 0;
 
+
+	//65->90 Upper case
+	//95 _
+	//97->122 lower case
+
+	//-----------------------------------------
+	//Turn everything into '_' and letters
+	//-----------------------------------------
+	for(int i = 0; i < stringLength(word); i++){
+		if ((word[i] > 31 && word[i] < 65) || (word[i] > 90 && word[i] < 95)){
+			word[i] = 95;
+		}
 	}
 
+	//-----------------------------------------
+	//Determine > 2 words
+	//-----------------------------------------
 
+	for(int i = 0; i < stringLength(word); i++){
+		if(word[i] != 95){
+			isWord = 1;
+			wordCount++;
+		}else if(isWord == 1){
+			isWord = 0;
+		}
+	}
+
+	if (wordCount > 2){
+		//-----------------------------------------
+		//Remove extra 95's in front
+		//-----------------------------------------
+		for(int i = 0; i < stringLength(word); i++){
+			if(word[i] == 95 && i == 0){
+				removeChar(word, i);
+				i = -1;
+		}
+	}
+
+	//-----------------------------------------
+	//Remove 95's in middle and back
+	//-----------------------------------------
+	for(int i = 0; i < stringLength(word); i++){
+		if(word[i] == 95 && word[i-1] == 95){
+			removeChar(word, i);
+			i--;
+		}
+	}
+
+	//-----------------------------------------
+	//Lower case all letters
+	//-----------------------------------------
+	for(int i = 0; i < stringLength(word); i++){
+		if(word[i] >= 65 && word[i] <= 90){
+			word[i] = toLowerCase(word[i]);
+		}
+	}
+
+	//-----------------------------------------
+	//Capitalize first letter
+	//-----------------------------------------
+	for(int i = 0; i < stringLength(word); i++){
+		if(word[i] >= 97 && word[i] <= 122 && (word[i-1] == 95 || i == 0)){
+			word[i] = toUpperCase(word[i]);
+		}
+	}
+
+	//-----------------------------------------
+	//Remove the '_'
+	//-----------------------------------------
+	for(int i = 0; i < stringLength(word); i++){
+		if(word[i] == 95){
+			removeChar(word, i);
+			i--;
+		}
+	}
+}else{
+		printf("invalid input string");
+	}
 }
 
 int main(){
 	char buffer[MAX_SIZE];
-	//FILE *fp = tmpfile();
+
 	/*Read the string from the keyboard*/
 	printf("Please enter a string: ");
-
-
 	fgets(buffer, MAX_SIZE, stdin);
-	printString(buffer);
-	printf("Length: %i\n", stringLength(buffer));
-	camelCase(buffer);
-	printString(buffer);
+
 	/*Call camelCase*/
-
-	//fclose(fp);
-
+	camelCase(buffer);
 
 	/*Print the new string*/
-
+	printString(buffer);
 
 	return 0;
 }
