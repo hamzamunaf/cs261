@@ -1,9 +1,13 @@
 /* CS261- Assignment 1 - Q.1*/
-/* Name:
+/* Name: Cory Kertz
  * Date:
  * Solution description:
  */
- 
+
+ // Runs with:
+ // gcc -Wall -std=c99 -o bin/Q1 Q1.c
+ // ./bin/Q1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -13,17 +17,18 @@ struct student{
 	int id;
 	int score;
 };
+
 static int SIZE = 10;
 
 struct student* allocate(){
      /*Allocate memory for ten students*/
-    struct student* tenStudents =malloc(SIZE * sizeof(struct student*));
+    struct student* students = malloc(SIZE * sizeof(struct student));
      /*Return the pointer*/
-    return tenStudents;
+    return students;
 }
 
 void generate(struct student* students){
-     /*Generate random and unique IDs and random scores for ten students, 
+     /*Generate random and unique IDs and random scores for ten students,
 IDs being between 1 and 10, scores between 0 and 100*/
     srand (time(NULL));
     int id, score, j;
@@ -32,10 +37,10 @@ IDs being between 1 and 10, scores between 0 and 100*/
     _Bool exists;
     while (position < SIZE){
         id = (rand() % 10) + 1;
-        
+
         tries++;
         //printf("id:  %d \n", id);
-        
+
         exists = 0;
         j = 0;
         while(!exists && j < position)
@@ -70,12 +75,12 @@ void output(struct student* students){
     {
         printf("ID%d Score%d \n", students[i].id, students[i].score);
     }
-    
-    
+
+
 }
 
 void summary(struct student* students){
-     /*Compute and print the minimum, maximum and average scores of the 
+     /*Compute and print the minimum, maximum and average scores of the
 ten students*/
     int total = 0,
     min = students[0].score,
@@ -90,36 +95,38 @@ ten students*/
         }
         total += students[i].score;
     }
-    
+
     printf("Minimum: %d\nMaximum: %d\nAverage: %d\n", min, max, (total/SIZE));
-     
+
 }
 
 void deallocate(struct student* stud){
-     /*Deallocate memory from stud*/
-    free(stud);
+    if (!(stud == NULL)){
+      /*Deallocate memory from stud*/
+     free(stud);
+    }
+
 }
 
 int main(){
     struct student* stud = NULL;
-    
+
     /*Call allocate*/
     stud = allocate();
-    
+
     /*Call generate*/
     generate(stud);
-    
+
     /*Call output*/
     output(stud);
-    
+
     /*Call summary*/
     summary(stud);
-    
+
     /*Call deallocate*/
     deallocate(stud);
-    
+
     output(stud);
 
     return 0;
 }
-
