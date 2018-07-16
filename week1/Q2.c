@@ -9,10 +9,10 @@
 
 int foo(int *a, int *b, int c){
     /*Swap the addresses stored in the pointer variables a and b*/
-    int parkinglot;
-    parkinglot = *a;
-    *a = *b;
-    *b = parkinglot;
+    int *parkinglot;
+    parkinglot = a;
+    a = b;
+    b = parkinglot;
 
     /*Decrement the value of integer variable c*/
     c--;
@@ -62,8 +62,8 @@ int main(){
 //before and after calling the function foo(..)?
 //Why or why not?
 //-------------------------------------------------
-//Yes, we swapped the locations of which x and y
-//stored their int values. This also swapped the
-//data which x and y represented as they pointed to
-//the memory location which store the others old data
+//No, we the function never actually touches the
+//x and y addresses. We are simply passing a copy
+//of the addresses for x and y to a and b, then
+//swapping them between a and b seperate from x and y. 
 //-------------------------------------------------
