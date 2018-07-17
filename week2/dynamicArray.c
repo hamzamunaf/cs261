@@ -28,7 +28,7 @@ struct DynArr
 void initDynArr(DynArr *v, int capacity)
 {
 	assert(capacity > 0);
-	assert(v!= 0);
+	assert(v != 0);
 	v->data = (TYPE *) malloc(sizeof(TYPE) * capacity);
 	assert(v->data != 0);
 	v->size = 0;
@@ -69,6 +69,9 @@ void freeDynArr(DynArr *v)
 	}
 	v->size = 0;
 	v->capacity = 0;
+	assert(v->data == 0);
+  assert(v->size == 0);
+  assert(v->capacity == 0);
 }
 
 /* Deallocate data array and the dynamic array ure.
@@ -82,6 +85,8 @@ void deleteDynArr(DynArr *v)
 {
 	freeDynArr(v);
 	free(v);
+	v = 0;
+	assert(v == 0);
 }
 
 /* Resizes the underlying array to be the size cap
@@ -96,15 +101,14 @@ void _dynArrSetCapacity(DynArr *v, int newCap)
 	/* FIXME: You will write this function */
 	assert(v!=0);
 	assert(v->size <= newCap);
-	newArray = (TYPE *) malloc(sizeof(TYPE) * capacity);
-	for(i=0; i < v->size; i++)
+
+	DynArr *tempDyn = newDynArr(newCap);
+	for(int i=0; i < v->size; i++)
 	{
-		newArray[i] = v->data[i];
+		tempDyn->data[i] = v->data[i];
 	}
-	free(v->data);
-	v->data = newArray;
-	v->capacity = newCap;
-	free(newArray);
+	v = tempDyn;
+	free(tempDyn);
 }
 
 /* Get the size of the dynamic array
@@ -196,7 +200,7 @@ void swapDynArr(DynArr *v, int i, int  j)
 {
 	/* FIXME: You will write this function */
 	assert(v != 0);
-	assert(  > 0);
+	//assert(  > 0); Trash? Look into it
 	assert(i >= 0);
 	assert(j >= 0);
 	assert(i < v->size);
@@ -204,7 +208,7 @@ void swapDynArr(DynArr *v, int i, int  j)
 	TYPE temp;
 	temp = v->data[i];
 	v->data[i] = v->data[j];
-	v->data[j] = temp
+	v->data[j] = temp;
 }
 
 /*	Remove the element at the specified location from the array,
@@ -253,7 +257,7 @@ int isEmptyDynArr(DynArr *v)
 		return 1;
 	}
 	else{
-		return 1;
+		return 0;
 	}
 }
 

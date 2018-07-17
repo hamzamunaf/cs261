@@ -4,6 +4,12 @@
 #include <assert.h>
 #include "dynArrayC.h"
 
+//-------------------------------------------------------------------------
+// Let's bring in a couple functions to make our lives easier...
+//
+//-------------------------------------------------------------------------
+
+
 
 /* ***************************************************************
 Using stack to check for unbalanced parentheses.
@@ -30,37 +36,32 @@ char nextChar(char* s)
 	pre: s is not null
 	post:
 */
+
 int isBalanced(char* s)
 {
 	/* FIXME: You will write this function */
+
 	DynArr *stack = newDynArr(15);
+  //assert(s != 0);
 
-	//Not sure if we want to assert here or return true
-  if(s == NULL){
-		return 1;
-	}
+  char nextC;
+	nextC = nextChar(s);
 
-  char c = nextChar(s);
-  char top;
-
-  while(c != '\0')
+  while(nextC != '\0')
   {
-      if(c == '(' || c == '[' || c == '{')
-          {
-              pushDynArr(stack, c);
-							top = topDynArr(stack);
-          }
-      if(c == ')' && top == '(')
-          popDynArr(stack);
-					top = topDynArr(stack);
-      if(c == ']' && top == '[')
-          popDynArr(stack);
-					top = topDynArr(stack);
-      if(c == '}' && top == '{')
-          popDynArr(stack);
-					top = topDynArr(stack);
+      if(nextC == '(' || nextC == '[' || nextC == '{')
+      		pushDynArr(stack, nextC);
 
-      c = nextChar(s);
+      if(nextC == ')' && topDynArr(stack) == '(')
+					popDynArr(stack);
+
+      if(nextC == ']' && topDynArr(stack) == '[')
+          popDynArr(stack);
+
+      if(nextC == '}' && topDynArr(stack) == '{')
+          popDynArr(stack);
+
+      nextC = nextChar(s);
   }
   if(!isEmptyDynArr(stack)) {
       deleteDynArr(stack);
@@ -80,6 +81,7 @@ int main(int argc, char* argv[]){
 	printf("Assignment 2\n");
 
 	res = isBalanced(s);
+
 
 	if (res)
 		printf("The string %s is balanced\n",s);

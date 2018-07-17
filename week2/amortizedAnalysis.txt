@@ -11,9 +11,41 @@ an already full dynamic array? As N (ie. the number of pushes) grows large,
 under this strategy for resizing, what is the average big-oh complexity for a
 push?
 
+Key params:
+  - Array starts with a capacity of 8.
+  - The capacity is doubled when the array exceeds capacity
+  - Perform 40 push operations
+
+Cost events:
+  - Add the first 8 items (8)
+  - Add the first 8 items to new array and add 8 more (8 + 8 = 16)
+  - Add the first 16 items to new array and add 16 more (16 + 16 = 16)
+  - Add the first 32 items to the new array and add 8 more (32 + 8 = 40)
+  Total cost: 8 + 16 + 32 + 40 = 96 units
+
+The average big-oh complexity for a push is O(1)+
+
+
 2. How many cost units are spent in the entire process of performing 40
 consecutive push operations on an empty array which starts out at capacity 8,
 assuming that the array will grow by a constant 2 spaces each time a new item
 is added to an already full dynamic array? As N (ie. the number of pushes) grows
 large, under this strategy for resizing, what is the average big-oh complexity
 for a push?
+
+Key params:
+  - Array starts with a capacity of 8.
+  - The capacity is capacity + 2 when the array exceeds capacity
+  - Perform 40 push operations
+
+Cost events:
+  - Add the first 8 items (8)
+  - Add the first 8 items to new array and add 2 more (8 + 2 = 10)
+  - Add the first 10 items to new array and add 2 more (10 + 2 = 12)
+  - Add the first 12 items to new array and add 2 more (12 + 2 = 14)
+  - Add the first 14 items to new array and add 2 more (14 + 2 = 16)
+  ...
+  - Add the first 38 items to new array and add 2 more (38 + 2 = 40)
+  Total cost: 8 + 10 + 12 + 14 + ... + 40 = 408 units
+
+This approaches an average big-oh complexity of O(n^2).
