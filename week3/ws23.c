@@ -44,10 +44,8 @@ int dynArrayIteratorHasNext (struct dynArrayIterator *itr) {
   assert(itr);             //assert that the struct has been initialized
   assert(itr->currentIndex >= 0);             //index is not negative
 
-  if(itr->currentIndex < itr->da->size) //there is at least one more position in array
+  return(itr->currentIndex < itr->da->size); //there is at least one more position in array
 //QUESTION: in video shows an increment here. Check into the logic.
-      return (1);
-    else return (0);
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +55,7 @@ TYPE dynArrayIteratorNext (struct dynArrayIterator *itr) {
   assert(itr);                                //iterator is not null
   assert(itr->currentIndex >= 0);             //index is not negative
   assert(itr->currentIndex < itr->da->size);  //index within size range
-  return (itr->da->data[itr->currentIndex++]);  //post-increment allows one fluid line
+  return (itr->da->data[itr->currentIndex++]);  //post-increment
 }
 
 //------------------------------------------------------------------------------
