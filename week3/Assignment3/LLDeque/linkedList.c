@@ -248,7 +248,6 @@ int linkedListContains(struct LinkedList* list, TYPE value)
 void linkedListRemove(struct LinkedList* list, TYPE value)
 {
 	// FIXME: you must write this
-	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
 	assert(position != 0);
