@@ -45,7 +45,7 @@ static void addLinkBefore(struct LinkedList* list, struct Link* link, TYPE value
 {
 	// FIXME: you must write this
 	assert(list != 0);
-	assert(Link != 0);
+	assert(link != 0);
 
 	struct Link* newLink = malloc(sizeof(struct Link));
 	assert(newLink != 0);
@@ -75,6 +75,7 @@ static void removeLink(struct LinkedList* list, struct Link* link)
 	link->next = 0;
 	link->prev = 0;
 	free(link);
+	list->size--;
 }
 
 /**
@@ -203,7 +204,6 @@ void linkedListPrint(struct LinkedList* list)
 	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
-	assert(position != 0);
 	position = list->frontSentinel->next;
 
 	for (int i = 0; i < list->size; i++){
@@ -230,7 +230,6 @@ int linkedListContains(struct LinkedList* list, TYPE value)
 	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
-	assert(position != 0);
 	position = list->frontSentinel->next;
 
 	for (int i = 0; i < list->size; i++){
@@ -250,7 +249,6 @@ void linkedListRemove(struct LinkedList* list, TYPE value)
 	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
-	assert(position != 0);
 	position = list->frontSentinel->next;
 
 	for (int i = 0; i < list->size; i++){

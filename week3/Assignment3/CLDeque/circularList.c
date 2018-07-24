@@ -59,7 +59,7 @@ static void addLinkAfter(struct CircularList* list, struct Link* link, TYPE valu
 	newLink->prev = link;
 	newLink->next = link->next;
 	link->next->prev = newLink;
-	link-> = newLink;
+	link->next = newLink;
 	list->size++;
 }
 
@@ -79,6 +79,7 @@ static void removeLink(struct CircularList* list, struct Link* link)
 	link->next = 0;
 	link->prev = 0;
 	free(link);
+	list->size--;
 }
 
 /**
@@ -111,7 +112,7 @@ void circularListDestroy(struct CircularList* list)
 void circularListAddFront(struct CircularList* list, TYPE value)
 {
 	// FIXME: you must write this
-	addLinkAfter(list, list->sentinel, TYPE value);
+	addLinkAfter(list, list->sentinel, value);
 }
 
 /**
@@ -120,7 +121,7 @@ void circularListAddFront(struct CircularList* list, TYPE value)
 void circularListAddBack(struct CircularList* list, TYPE value)
 {
 	// FIXME: you must write this
-	addLinkAfter(list, list->sentinel->prev, TYPE value)
+	addLinkAfter(list, list->sentinel->prev, value);
 }
 
 /**
@@ -180,11 +181,10 @@ void circularListPrint(struct CircularList* list)
 	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
-	assert(position != 0);
 	position = list->sentinel->next;
 
 	for (int i = 0; i < list->size; i++){
-		printf("%i \n", position->value);
+		printf("%g \n", position->value);
 		position = position->next;
 	}
 }
@@ -197,11 +197,10 @@ void circularListReverse(struct CircularList* list)
 	// FIXME: you must write this
 	assert(list != 0);
 	struct Link* position;
-	assert(position != 0);
 	position = list->sentinel->prev;
 
 	for (int i = 0; i < list->size; i++){
-		printf("%i \n", position->value);
+		printf("%g \n", position->value);
 		position = position->prev;
 	}
 }

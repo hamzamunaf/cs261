@@ -40,7 +40,7 @@ struct listQueue {
 void listQueueInit(struct listQueue *q) {
 
        // FIXME: you must write this
-			 struct link sentinel = malloc(sizeof(struct link));
+			 struct link* sentinel = malloc(sizeof(struct link));
 			 q->firstLink = sentinel;
 			 assert(q->firstLink != 0);
 			 q->lastLink = sentinel;
@@ -70,14 +70,8 @@ struct listQueue * listQueueCreate()
 * the first link. If the next value is null it is empty, and will return 1
 */
 int listQueueIsEmpty(struct listQueue *q) {
-
     //FIXME: you must write this
-		if(q->size > 0){
-			return 0;
-		}else{
-			return 1;
-		}
-
+			return (q->size < 1);
 }
 
 /*
@@ -91,16 +85,14 @@ void listQueueAddBack(struct listQueue *q, TYPE e) {
     // FIXME: you must write this
 		struct link* newLink = malloc(sizeof(struct link));
 		if(q->firstLink == NULL){
-			q->firstLink = newLink
+			q->firstLink = newLink;
 		}else{
-			q->lastLink->next = newLink
+			q->lastLink->next = newLink;
 		}
 		q->lastLink = newLink;
 		newLink->next = 0;
 		newLink->value = e;
 		q->size++;
-
-
 }
 
 /*
@@ -108,8 +100,11 @@ void listQueueAddBack(struct listQueue *q, TYPE e) {
  */
 void listQueueRemoveFront(struct listQueue *q) {
     // FIXME: you must write this
+		assert(q != 0);
+		assert(!listQueueIsEmpty(q));
+
 		if(q->size > 1){
-			link *temp;
+			struct link *temp;
 			temp = q->firstLink;
 			q->firstLink = q->firstLink->next;
 			q->size--;
@@ -139,12 +134,12 @@ void printList(struct listQueue* l)
 {
 	assert(l != 0);
 
-	struct link * printMe = l->firstLink->next;
+	struct link * temp = l->firstLink->next;
 
-	while (printMe!= NULL)
+	while (temp != NULL)
 	{
-		printf("Value: %d\n", printMe->value);
-		printMe = printMe->next;
+		printf("Value: %d\n", temp->value);
+		temp = temp->next;
 	}
 }
 
@@ -185,12 +180,9 @@ the stack.
 struct linkedListStack * linkedListStackCreate(){
     // FIXME: you must write this
 		struct linkedListStack* s = (struct linkedListStack*)malloc(sizeof(struct linkedListStack));
-
+		assert(s != 0);
     linkedListStackInit(s);
-
     return s;
-
-
 }
 
 /*
@@ -200,11 +192,7 @@ returns a 0.
 int linkedListStackIsEmpty(struct linkedListStack *s) {
 
 	// FIXME: you must write this
-	if(s->structSize > 0){
-		return 0;
-	}else{
-		return 1;
-	}
+	return(s->structSize < 1);
 
 }
 
@@ -216,23 +204,8 @@ The
  */
 void linkedListStackPush(struct linkedListStack *s, TYPE d) {
     // FIXME: you must write this
-		listQueueAddBack(s->Q2,d);
-
-    // iterates through the current Q1 adding every value to Q2 after d
-    while (!listQueueIsEmpty(s->Q1)) {
-        listQueueAddBack(s->Q2, listQueueFront(s->Q1));
-        // removes the front from Q1 now that it's added to Q2
-        listQueueRemoveFront(s->Q1);
-    }
-
-    // switches the queues
-    struct listQueue* temp = s->Q1;
-    s->Q1 = s->Q2;
-    s->Q2 = temp;
-
-    // increments the size
+		listQueueAddBack(s->Q1,d);
     s->structSize++;
-
 }
 /*
  * This funciton pops a value off of the stack. It does this by moving all
@@ -242,14 +215,22 @@ maintained
  * at the back of the queue list.
  */
 void linkedListStackPop(struct linkedListStack *s) {
-	// checks stack is not empty
-	assert(!linkedListStackIsEmpty(s));
 
-	// pops the value off the Q1
-	listQueueRemoveFront(s->Q1);
+	if(!linkedListStackIsEmpty(s)){
+		while (s->Q1->size > 1) {
+		    listQueueAddBack(s->Q2, listQueueFront(s->Q1));
+		    listQueueRemoveFront(s->Q1);
+		  }
+		  listQueueRemoveFront(s->Q1);
+		  s->structSize--;
 
-	// decrements size
-	s->structSize--;
+		  struct listQueue *tmp = s->Q1;
+		  s->Q1 = s->Q2;
+		  s->Q2 = tmp;
+
+	}else{
+		printf("Error: No more items in stack\n");
+	}
 }
 /*
  * This function returns the value that is at the back of the queue that
@@ -258,11 +239,19 @@ is
  */
 TYPE linkedListStackTop(struct linkedListStack *s) {
     // FIXME: you must write this
-		// checks stack is not empty
-assert(!linkedListStackIsEmpty(s));
+		while (s->Q1->size > 1) {
+	    listQueueAddBack(s->Q2, listQueueFront(s->Q1));
+	    listQueueRemoveFront(s->Q1);
+	  }
 
-// return the front of Q1
-return (listQueueFront(s->Q1));
+	  int top = listQueueFront(s->Q1);
+	  listQueueAddBack(s->Q2, listQueueFront(s->Q1));
+	  listQueueRemoveFront(s->Q1);
+
+	  struct listQueue *tmp = s->Q1;
+	  s->Q1 = s->Q2;
+	  s->Q2 = tmp;
+	  return top;
 }
 
 /*
@@ -316,7 +305,6 @@ int main(int argc, char* argv[])
 	printf("Pushed.\n\n");
 
 
-
 	//Print value at the top and then remove it
 	printf("Value at the top of stack %d now being popped. \n",linkedListStackTop(stack));
 	linkedListStackPop(stack);
@@ -348,6 +336,7 @@ int main(int argc, char* argv[])
 	printf("Pushing the value: 11\n");
 	linkedListStackPush(stack, 11);
 	printf("Pushed.\n\n");
+
 
 	printf("One more pop:\n");
 	linkedListStackPop(stack);
