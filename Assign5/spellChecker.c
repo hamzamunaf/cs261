@@ -54,7 +54,40 @@ char* nextWord(FILE* file)
  */
 void loadDictionary(FILE* file, HashMap* map)
 {
-    // FIXME: implement
+  // FIXME: implement
+  char *word = nextWord(file);
+  while (word != 0) {
+    hashMapPut(map, word, 1);
+    free(word);
+    word = nextWord(file);
+  }
+}
+
+/*-------------------------------------------------------------------------*
+{ wiki:xxx,
+   author = "Wikibooks",
+   title = "Algorithm Implementation/Strings/Levenshtein distance --- Wikibooks{,} The Free Textbook Project",
+   year = "2018",
+   url = "\url{https://en.wikibooks.org/w/index.php?title=Algorithm_Implementation/Strings/Levenshtein_distance&oldid=3450276}",
+   note = "[Online; accessed 14-August-2018]"
+ }
+ * https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#C
+ *------------------------------------------------------------------------*/
+#define MIN3(a, b, c) ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
+int levenshteinDist(char *s1, char *s2) {
+	unsigned int x, y, s1len, s2len;
+	s1len = strlen(s1);
+	s2len = strlen(s2);
+	unsigned int matrix[s2len+1][s1len+1];
+	matrix[0][0] = 0;
+	for (x = 1; x <= s2len; x++)
+		matrix[x][0] = matrix[x-1][0] + 1;
+	for (y = 1; y <= s1len; y++)
+		matrix[0][y] = matrix[0][y-1] + 1;
+	for (x = 1; x <= s2len; x++)
+		for (y = 1; y <= s1len; y++)
+			matrix[x][y] = MIN3(matrix[x-1][y] + 1,matrix[x][y-1] + 1, matrix[x-1][y-1] + (s1[y-1] == s2[x-1] ? 0 : 1));
+	return (matrix[s2len][s1len]);
 }
 
 /**
@@ -69,29 +102,71 @@ int main(int argc, const char** argv)
 {
     // FIXME: implement
     HashMap* map = hashMapNew(1000);
-    
+
     FILE* file = fopen("dictionary.txt", "r");
     clock_t timer = clock();
     loadDictionary(file, map);
     timer = clock() - timer;
     printf("Dictionary loaded in %f seconds\n", (float)timer / (float)CLOCKS_PER_SEC);
     fclose(file);
-    
+
     char inputBuffer[256];
     int quit = 0;
     while (!quit)
     {
         printf("Enter a word or \"quit\" to quit: ");
         scanf("%s", inputBuffer);
-        
+
         // Implement the spell checker code here..
-        
+        int found = 0;
+char *matches[5];
+for (int i = 0; i < 5; i++) {
+  matches[i] = malloc(sizeof(char) * 257);
+  assert(matches[i] != 0);
+}
+int dists[5] = {0, 0, 0, 0, 0};
+for (int i = 0; i < map->capacity; i++) {
+  HashLink *link = map->table[i];
+  if (link != NULL) {
+    while (link != NULL) {
+      if (strcmp(inputBuffer, link->key) == 0) {
+        printf("Word Spelled Correctly\n");
+        link = NULL;
+        found = 1;
+      }
+      else {
+        int dist = levenshteinDist(inputBuffer, link->key);
+        for (int j = 0; j < 5; j++) {
+          if ((dists[j] == 0) || (dists[j] > dist)) {
+            dists[j] = dist;
+            strcpy(matches[j],link->key);
+            break;
+          }
+        }
+        link = link->next;
+      }
+    }
+  }
+  if (found) {
+    break;
+  }
+}
+if (!found) {
+  for (int i = 0; i < 5; i++) {
+    printf("Did you mean \"%s\"\n", matches[i]);
+  }
+}
+
+for (int i = 0; i < 5; i++) {
+  free(matches[i]);
+}
+
         if (strcmp(inputBuffer, "quit") == 0)
         {
             quit = 1;
         }
     }
-    
+
     hashMapDelete(map);
     return 0;
 }
